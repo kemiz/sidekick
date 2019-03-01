@@ -77,6 +77,8 @@ def create_dataset(dataset_path: str,
         parallel_processing: How many processes to parallel to the existing
                              process for preprocessing. Set to 0 to disable.
         progress: Print progress
+        overwrite: Overwrite the output file if exists, otherwise exit with
+                   an exception
 
     See Also:
         verify_images: To verify image columns are platform compatible
