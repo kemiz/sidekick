@@ -59,7 +59,8 @@ def create_dataset(dataset_path: str,
                    preprocess: Mapping[str, Callable] = None,
                    include_index: bool = False,
                    parallel_processing: int = 10,
-                   progress: bool = False):
+                   progress: bool = False,
+                   overwrite: bool = False):
     """Create a Peltarion compatible .zip dataset
 
     Notice that columns containing images must have the same shape. Please use
@@ -76,6 +77,8 @@ def create_dataset(dataset_path: str,
         parallel_processing: How many processes to parallel to the existing
                              process for preprocessing. Set to 0 to disable.
         progress: Print progress
+        overwrite: Overwrite the output file if exists, otherwise exit with
+                   an exception
 
     See Also:
         verify_images: To verify image columns are platform compatible
@@ -83,8 +86,11 @@ def create_dataset(dataset_path: str,
     """
     # Sanity checks
     if os.path.exists(dataset_path):
-        raise OSError("File %s already exists, will not overwrite" %
-                      dataset_path)
+        if overwrite:
+            os.remove(dataset_path)
+        else:
+            raise OSError("File %s already exists, will not overwrite" %
+                          dataset_path)
     if not len(dataset_index):
         raise ValueError('Empty dataset index')
     os.makedirs(os.path.dirname(dataset_path), exist_ok=True)
