@@ -2,6 +2,7 @@ from itertools import islice
 from typing import Any, Dict, Generator, Iterable, List
 
 import requests
+from requests.adapters import HTTPAdapter
 
 from .encode import DataItem, decode_feature, encode_feature
 
@@ -44,6 +45,7 @@ class Deployment:
     """Sidekick for Peltarion platform deployments
     """
     BATCH_SIZE = 128
+    MAX_RETRIES = 3
 
     def __init__(self,
                  url: str,
@@ -53,8 +55,9 @@ class Deployment:
         self._dtypes_in = dtypes_in
         self._dtypes_out = dtypes_out
         self._headers = {'Authorization': 'Bearer ' + token}
-        self._session = requests.Session()
         self._url = url
+        self._session = requests.Session()
+        self._session.mount('', HTTPAdapter(max_retries=self.MAX_RETRIES))
 
     def predict_lazy(self, items: Iterable[DataItem]) -> \
             Generator[DataItem, None, None]:
