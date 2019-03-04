@@ -199,8 +199,14 @@ class ImageEncoder(BinaryEncoder):
 
     @classmethod
     def encode(cls, value: Image) -> bytes:
+        original_format = value.format
+        # We do not support 4-channel PNGs or alpha in general
+        if value.mode == 'RGBA':
+            value = value.convert('RGB')
+        elif value.mode == 'LA':
+            value = value.convert('L')
         with io.BytesIO() as image_bytes:
-            value.save(image_bytes, format=value.format)
+            value.save(image_bytes, format=original_format)
             return image_bytes.getvalue()
 
     @classmethod
