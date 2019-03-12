@@ -1,11 +1,12 @@
 import functools
 import os
 
-import pandas as pd
 import numpy as np
+import pandas as pd
 import pytest
-import sidekick
 from PIL import Image
+
+import sidekick
 
 
 @pytest.fixture

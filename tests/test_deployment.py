@@ -3,8 +3,9 @@ import random
 import numpy as np
 import pytest
 import responses
-import sidekick
 from PIL import Image
+
+import sidekick
 from sidekick import Deployment
 
 

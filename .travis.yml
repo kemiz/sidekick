@@ -7,14 +7,17 @@ python:
   - "3.8-dev"
 cache: pip
 install:
-  - pip install .[test]
-  - pip install mypy coverage isort flake8 flake8-bugbear pep8-naming
+  - pip install --upgrade mypy coverage isort flake8 flake8-bugbear pep8-naming
 script:
+  # Install sidekick
+  - pip install .[test]
+
   # Check type hints
   - mypy --ignore-missing-imports .  # numpy etc. misses library stub files
 
   # Validate import statements sort (standard lib / third-party / first-party)
   - isort --check-only
+  - isort --diff
 
   # Check for unused symbols/imports and PEP8 formatting.
   - flake8 --version

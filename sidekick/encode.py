@@ -174,6 +174,9 @@ class NumpyEncoder(BinaryEncoder):
 class ImageEncoder(BinaryEncoder):
 
     def file_extension(self, value):
+        if value.format is None:
+            raise ValueError('No format set on image, please specify '
+                             '(see the documentation for details)')
         return value.format.lower()
 
     def media_type(self, value):
