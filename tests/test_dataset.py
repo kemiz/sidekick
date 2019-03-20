@@ -1,5 +1,6 @@
 import functools
 import os
+import zipfile
 
 import numpy as np
 import pandas as pd
@@ -77,6 +78,21 @@ def test_create_dataset_parallel(dataset_index, tmpdir):
         parallel_processing=10
     )
     assert os.path.exists(dataset_path) and os.path.getsize(dataset_path) > 100
+
+
+def test_dataset_metadata(dataset_index, tmpdir):
+    # Create dataset
+    dataset_path = str(tmpdir.join('dataset.zip'))
+    set_image_format = functools.partial(sidekick.process_image, format='png')
+    sidekick.create_dataset(
+        dataset_path,
+        dataset_index,
+        preprocess={'image_column': set_image_format}
+    )
+
+    # Assert the .sidekick metadata was added
+    with zipfile.ZipFile(dataset_path, 'r') as zf:
+        assert '.sidekick' in zf.namelist()
 
 
 def test_import_multiple_formats(tmpdir):

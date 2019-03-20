@@ -58,6 +58,7 @@ class Deployment:
         self._url = url
         self._session = requests.Session()
         self._session.mount('', HTTPAdapter(max_retries=self.MAX_RETRIES))
+        self._session.headers.update({'User-Agent': 'sidekick'})
 
     def predict_lazy(self, items: Iterable[DataItem]) -> \
             Generator[DataItem, None, None]:

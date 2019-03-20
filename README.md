@@ -1,4 +1,4 @@
-# sidekick [![Build Status](https://travis-ci.com/Peltarion/sidekick.svg?token=nkS94uQqBVFyK1JitpGf&branch=master)](https://travis-ci.com/Peltarion/sidekick)
+# Sidekick (Beta) [![Build Status](https://travis-ci.com/Peltarion/sidekick.svg?token=nkS94uQqBVFyK1JitpGf&branch=master)](https://travis-ci.com/Peltarion/sidekick)
 This code is the sidekick to the superhero that is the Peltarion Platform. Sidekick
 handles the mundane tasks like bundling up data into the Platform's preferred
 format or sending data examples to the deployment endpoints to get predictions.
@@ -24,19 +24,12 @@ ipython kernel install --user --name=sidekick
 ```
 where `sidekick` is the name of your virtual environment.
 
-Install package and dependencies with pip directly from GitHub (requires valid SSH keys to the Peltarion organization).
+Install package and dependencies with pip directly from GitHub.
 
 
 ```console
 pip install git+ssh://git@github.com/Peltarion/sidekick.git#egg=sidekick
 ```
-
-Another option is to create a GitHub access token with repo permissions here https://github.com/settings/tokens, and using this command instead:
-
-```console
-pip install git+https://USERNAME:TOKEN@github.com/Peltarion/sidekick.git#egg=sidekick
-```
-The token can be revoked from the same GitHub page, and this doesn't require copying your SSH keys around.
 
 ## Get data in - Create a Platform compatible dataset
 When creating a dataset zip you can load the data in two separate ways.

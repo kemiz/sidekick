@@ -118,6 +118,9 @@ def create_dataset(dataset_path: str,
         disable=not progress
     )
     with ZipFile(dataset_path, 'w', compression=ZIP_DEFLATED) as dataset_zip:
+        # Add .sidekick metadata
+        dataset_zip.writestr('.sidekick', b'')
+
         # Copy over without preprocessing
         for column in path_columns.difference(preprocess):
             for index, item in dataset_index[column].items():

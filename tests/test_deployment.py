@@ -136,3 +136,27 @@ def test_deployment_categorical():
     )
     with pytest.raises(ValueError):
         deployment.predict(feature_1=0.0, feature_2=np.random.rand(30))
+
+
+@responses.activate
+def test_deployment_user_agent():
+    responses.add(
+        responses.POST,
+        'http://deployment_url',
+        json={'rows': [{'out': 1.0}]}
+    )
+    deployment = Deployment(
+        url='http://deployment_url',
+        token='deployment_token',
+        dtypes_in={'feature': 'Float (1)'},
+        dtypes_out={'out': 'Float (1)'}
+    )
+
+    # Single scalar value prediction
+    prediction = deployment.predict(feature=1.0)
+
+    # Assert user agent and calls were correct
+    request = responses.calls[0].request
+    assert prediction == {'out': 1.0}
+    assert len(responses.calls) == 1
+    assert 'sidekick' in request.headers['User-Agent'].lower()
