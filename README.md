@@ -19,7 +19,7 @@ When installing sidekick we recommend using a separate virtual environment, see 
 
 Install package and dependencies with pip directly from GitHub:
 ```console
-pip install git+ssh://git@github.com/Peltarion/sidekick.git#egg=sidekick
+pip install git+https://github.com/Peltarion/sidekick#egg=sidekick
 ```
 
 ## Get data in - Create a Platform compatible dataset
