@@ -14,19 +14,10 @@ project and appreciate the value that the Platform provides.
 ## Installation of sidekick
 **Requirements** Sidekick requires python 3.5+.
 
-### Integrating Jupiter notebooks with virtual environments
 When installing sidekick we recommend using a separate virtual environment, see e.g.
 [the tutorial *Python virtual environments a primer*](https://realpython.com/python-virtual-environments-a-primer/).
 
-To make sidekick available to jupiter, run this command:
-```
-ipython kernel install --user --name=sidekick
-```
-where `sidekick` is the name of your virtual environment.
-
-Install package and dependencies with pip directly from GitHub.
-
-
+Install package and dependencies with pip directly from GitHub:
 ```console
 pip install git+ssh://git@github.com/Peltarion/sidekick.git#egg=sidekick
 ```
@@ -122,7 +113,9 @@ This example shows how to query an enabled deployment for image classification.
 ![deployment example](static/image/deployment_example.png "Deployment example")
 
 Use the `url` and `token` displayed in the dark box. Then, create a dictionary
-of the _Feature_ and _Type_ (here `image` and `image(32x32x3)) fields from the table of input and output parameters to specify `dtypes_in` and `dtypes_out`.
+of the Feature _Name_ and _Type_ (here `image` and `Image (32x32x3)`) fields
+from the table of input and output parameters to specify `dtypes_in` and
+`dtypes_out`.
 
 ```python
 import sidekick
@@ -166,66 +159,23 @@ client.predict_many([
 ])
 ```
 
-### Interactive exploration of data
+### Interactive exploration of data - predict_lazy
 
-For interactive exploration of data it us useful to use the `predict_lazy` method, which returns a generator that lazily polls the deployment when needed. Here's an example exploring outputs of an autoencoder interactively.
+For interactive exploration of data it is useful to use the `predict_lazy`
+method, which returns a generator that lazily polls the deployment when needed.
+This allows you to immediatly start exploring the results instead of waiting
+for all predictions to finnish.
 
 **Example**
 ```python
-import IPython.display as ipd
-import numpy as np
-import pandas as pd
-import sidekick
-import zipfile
-from ipywidgets import interact_manual
-from PIL import Image
-
-
-# Open Peltarion compatible cifar10 dataset
-DATASET_PATH = 'cifar10_full.zip'
-with zipfile.ZipFile(DATASET_PATH, 'r') as z:
-    index_file = z.open('index.csv')
-    dataset = pd.read_csv(index_file)
-    dataset['image'] = dataset['image'].apply(
-        lambda path: Image.open(z.open(path))
-    )
-
-# Connect to autoencoder deployment
-client = sidekick.Deployment(
-    url='<url>',
-    token='<token>',
-    dtypes_in={'image': 'Image (32x32x3)'},
-    dtypes_out={'image': 'Image (32x32x3)'}
-)
-
-# Get predictions for all images in dataset
-predictions = client.predict_lazy(dataset.to_dict('records'))
-
-# Show grid of given size
-def show_next_grid(n_rows, n_columns):
-    grid = Image.new('RGB', (n_columns * 32, n_rows * 32))
-    for column in range(n_columns):
-        for row in range(n_rows):
-            grid.paste(next(predictions)['image'], (column * 32, row * 32))
-    return grid
-
-interact_manual(show_next_grid, n_rows=(1, 10), n_columns=(1, 10))
+client.predict_lazy([
+    {'image': Image.open('test1.png')},
+    {'image': Image.open('test2.png')}
+])
 ```
-
-Here's an example of it running. Notice that this allows you to immediatly start exploring the results instead of waiting for all predictions to finnish.
-
-![interactive example](static/image/interactive_use_sidekick.gif)
-
-#### Note
-If you're on Ubuntu, remember to run
-```
-jupyter nbextension enable --py widgetsnbextension
-```
-to get the ipywidgets working
-
 
 ### Object type and field type compatibility
-Which object types are compatible with each field type may be show by printing
+Which object types are compatible with each field type may be shown by printing
 the `sidekick.encode.DTYPE_COMPATIBLITY` dictionary.
 
 ```python
@@ -236,3 +186,6 @@ print(sidekick.encode.DTYPE_COMPATIBILITY)
  'Numpy': {numpy.ndarray},
  'Image': {PIL.Image.Image}}
 ```
+
+# Examples
+Examples of how to use sidekick are available at: [examples/](examples/)
