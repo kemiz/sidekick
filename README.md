@@ -88,7 +88,7 @@ import sidekick
 
 # Create preprocessor for images, cropping to 32x32 and formatting as png
 image_processor = functools.partial(
-    sidekick.process_image, crop_size=(32, 32), format='png')
+    sidekick.process_image, mode='center_crop_or_pad', size=(32, 32), format='png')
 
 # Create dataset
 sidekick.create_dataset(

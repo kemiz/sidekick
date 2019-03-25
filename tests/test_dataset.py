@@ -43,7 +43,12 @@ def dataset_index(tmpdir):
 def test_create_dataset_sequential(dataset_index, tmpdir):
     # Create dataset
     dataset_path = str(tmpdir.join('dataset.zip'))
-    resize_image = functools.partial(sidekick.process_image, crop_size=(32, 8))
+    crop_image = functools.partial(
+        sidekick.process_image,
+        mode='center_crop_or_pad',
+        size=(32, 8),
+        format='png'
+    )
     set_image_format = functools.partial(sidekick.process_image, format='png')
 
     sidekick.create_dataset(
@@ -51,7 +56,7 @@ def test_create_dataset_sequential(dataset_index, tmpdir):
         dataset_index,
         path_columns=['image_file_column', 'image_file_process_column'],
         preprocess={
-            'image_file_process_column': resize_image,
+            'image_file_process_column': crop_image,
             'image_column': set_image_format
         },
         progress=True,
@@ -63,7 +68,12 @@ def test_create_dataset_sequential(dataset_index, tmpdir):
 def test_create_dataset_parallel(dataset_index, tmpdir):
     # Create dataset
     dataset_path = str(tmpdir.join('dataset.zip'))
-    resize_image = functools.partial(sidekick.process_image, crop_size=(32, 8))
+    resize_image = functools.partial(
+        sidekick.process_image,
+        mode='resize',
+        size=(32, 8),
+        format='png'
+    )
     set_image_format = functools.partial(sidekick.process_image, format='png')
 
     sidekick.create_dataset(

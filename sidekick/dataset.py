@@ -14,36 +14,42 @@ from .encode import ENCODER_COMPATIBILITY, FILE_EXTENSION_ENCODERS
 
 
 def process_image(image: Image.Image,
-                  crop_mode: str = 'center_crop_or_pad',
-                  crop_size: Tuple[int, int] = None,
+                  mode: str = 'center_crop_or_pad',
+                  size: Tuple[int, int] = None,
                   format: str = None):
     """Process image
 
     Args:
         image: Image to process (will be modified)
-        crop_mode: Mode for cropping. Only active if crop size is not None.
-        crop_size: Spatial crop size (width, height)
+        mode: {'center_crop_or_pad', 'resize'}.
+              Only active if size is not None.
+        size: Output image size (width, height)
         format: Set to modify format. Can be 'png' or 'jpeg'.
 
     Returns:
         image
     """
-    crop_modes = {'center_crop_or_pad'}
-    if crop_mode not in crop_modes:
-        raise ValueError('Crop mode not supported. Available: %s' % crop_modes)
+    modes = {'center_crop_or_pad', 'resize'}
 
-    if crop_size is not None:
-        width, height = crop_size
-        center_x, center_y = (i // 2 for i in image.size)
-        diff_x, diff_y = width // 2, height // 2
-        left = center_x - diff_x
-        upper = center_y - diff_y
-        right = center_x + diff_x
-        lower = center_y + diff_y
-        cropped_image = image.crop((left, upper, right, lower))
-        cropped_image.load()
-        cropped_image.format = image.format
-        image = cropped_image
+    if size:
+        if mode == 'center_crop_or_pad':
+            width, height = size
+            center_x, center_y = (i // 2 for i in image.size)
+            diff_x, diff_y = width // 2, height // 2
+            left = center_x - diff_x
+            upper = center_y - diff_y
+            right = center_x + diff_x
+            lower = center_y + diff_y
+            cropped_image = image.crop((left, upper, right, lower))
+            cropped_image.load()
+            cropped_image.format = image.format
+            image = cropped_image
+
+        elif mode == 'resize':
+            image = image.resize(size)
+
+        else:
+            raise ValueError('Mode not supported. Available: %s' % modes)
 
     if format is not None:
         if format not in FILE_EXTENSION_ENCODERS:
