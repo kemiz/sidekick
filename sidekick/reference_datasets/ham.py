@@ -93,7 +93,7 @@ def create_ham_dataset(
             sidekick.process_image,
             mode='resize',
             size=size,
-            format='jpeg'
+            file_format='jpeg'
         )
 
         print('Creating dataset...')
