@@ -47,9 +47,10 @@ def test_create_dataset_sequential(dataset_index, tmpdir):
         sidekick.process_image,
         mode='center_crop_or_pad',
         size=(32, 8),
-        format='png'
+        file_format='png'
     )
-    set_image_format = functools.partial(sidekick.process_image, format='png')
+    set_image_format = functools.partial(
+        sidekick.process_image, file_format='png')
 
     sidekick.create_dataset(
         dataset_path,
@@ -72,9 +73,10 @@ def test_create_dataset_parallel(dataset_index, tmpdir):
         sidekick.process_image,
         mode='resize',
         size=(32, 8),
-        format='png'
+        file_format='png'
     )
-    set_image_format = functools.partial(sidekick.process_image, format='png')
+    set_image_format = functools.partial(
+        sidekick.process_image, file_format='png')
 
     sidekick.create_dataset(
         dataset_path,
@@ -93,7 +95,8 @@ def test_create_dataset_parallel(dataset_index, tmpdir):
 def test_dataset_metadata(dataset_index, tmpdir):
     # Create dataset
     dataset_path = str(tmpdir.join('dataset.zip'))
-    set_image_format = functools.partial(sidekick.process_image, format='png')
+    set_image_format = functools.partial(
+        sidekick.process_image, file_format='png')
     sidekick.create_dataset(
         dataset_path,
         dataset_index,
@@ -118,7 +121,8 @@ def test_import_multiple_formats(tmpdir):
         'image_column': images
     })
     dataset_path = str(tmpdir.join('dataset.zip'))
-    set_image_format = functools.partial(sidekick.process_image, format='png')
+    set_image_format = functools.partial(
+        sidekick.process_image, file_format='png')
 
     sidekick.create_dataset(
         dataset_path,
@@ -130,3 +134,23 @@ def test_import_multiple_formats(tmpdir):
         parallel_processing=0
     )
     assert os.path.exists(dataset_path) and os.path.getsize(dataset_path) > 100
+
+
+class TestProcessImage:
+    def test_crop_image(self):
+        size = (10, 15)
+        file_format = 'png'
+        image = Image.new(mode='RGB', size=(100, 100))
+        image.format = file_format
+        cropped_image = sidekick.dataset.crop_image(image, size=size)
+        assert cropped_image.size == size
+        assert cropped_image.format == file_format
+
+    def test_resize_image(self):
+        size = (10, 15)
+        file_format = 'png'
+        image = Image.new(mode='RGB', size=(100, 100))
+        image.format = file_format
+        resized_image = sidekick.dataset.resize_image(image, size=size)
+        assert resized_image.size == size
+        assert resized_image.format == file_format
