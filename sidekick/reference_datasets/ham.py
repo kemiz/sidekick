@@ -58,10 +58,12 @@ def create_ham_dataset(
 
     with tempfile.TemporaryDirectory() as tmpdir:
 
+        print('Downloading metadata...')
         with tempfile.TemporaryFile() as metadata:
             utils.download_data(metadata, metadata_url)
             utils.extract_zip(metadata, tmpdir)
 
+        print('Downloading images...')
         with tempfile.TemporaryFile() as images:
             utils.download_data(images, images_url, progress=True)
             utils.extract_zip(images, tmpdir)
