@@ -123,8 +123,8 @@ import sidekick
 client = sidekick.Deployment(
     url='<url>',
     token='<token>',
-    dtypes_in={'Image': 'Image (32x32x3)'},
-    dtypes_out={'Image': 'Image (32x32x3)'}
+    dtypes_in={'image': 'Image (32x32x3)'},
+    dtypes_out={'image': 'Image (32x32x3)'}
 )
 ```
 
@@ -142,7 +142,7 @@ from PIL import Image
 image = Image.open('test.png')
 
 # Get predictions from model
-client.predict(Image=image)
+client.predict(image=image)
 ```
 Note: If the feature name is not a valid python variable, e.g., `Image.Input`, use `predict_many` instead of `predict`.
 
